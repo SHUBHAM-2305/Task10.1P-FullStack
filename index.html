@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form id="signUpForm" action="/" method="POST">
+        <h2>SIGN UP FOR OUR DAILY INSIDER</h2>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Subscribe</button>
+        <div id="message"></div>
+    </form>
+
+    <script>
+        document.getElementById('signUpForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form from reloading
+
+            // Create a FormData object and pass the form element
+            const formData = new FormData(document.getElementById('signUpForm'));
+
+            // Convert FormData to plain object to send via fetch
+            const formObject = Object.fromEntries(formData.entries());
+
+            // Fetch request to send form data
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Set to JSON
+                },
+                body: JSON.stringify(formObject) // Send as JSON string
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                if (data.success) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.style.color = 'green';
+                } else {
+                    messageDiv.textContent = 'Error Sending Email';
+                    messageDiv.style.color = 'red';
+                }
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = 'Error Sending Email';
+                messageDiv.style.color = 'red';
+                messageDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+
+</html>
